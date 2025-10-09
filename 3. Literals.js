@@ -44,3 +44,4 @@ const bigInt = 9007199254741991n; //bigint literal
 console.log(bigInt);
 
 const sym = Symbol("sym"); //symbol literal    
+console.log(sym)
