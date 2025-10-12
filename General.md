@@ -287,6 +287,3 @@ b 2
 * Use **`for...in`** → when you need **keys** or **property names**.
 * Use **`for...of`** → when you need **values**.
 
----
-
-Would you like me to include a **mini “pitfall example”** showing what goes wrong when you use `for...in` on arrays? It’ll help lock the difference in your memory.
