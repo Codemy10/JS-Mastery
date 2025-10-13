@@ -287,3 +287,89 @@ b 2
 * Use **`for...in`** → when you need **keys** or **property names**.
 * Use **`for...of`** → when you need **values**.
 
+# Functions in Javascript
+
+## 📝 JavaScript Function Parameters: Pass-by-Value
+
+JavaScript uses **Pass-by-Value** for all function arguments. This means that when an argument is passed to a function, the function parameter receives a **copy** of that argument's value.
+
+The distinction lies in *what* kind of value is being copied: the actual data (for primitives) or the reference/memory address (for objects).
+
+### 1\. Primitives (Number, String, Boolean, etc.)
+
+When a primitive is passed, the actual **value** is copied. Any reassignment inside the function only changes the copy, leaving the original variable untouched.
+
+| Action | Code Example | Result |
+| :--- | :--- | :--- |
+| **Reassignment** | `num = 100;` | Original variable **is NOT changed.** |
+
+```javascript
+let count = 5;
+
+function modifyPrimitive(num) {
+  // 'num' is a COPY of 5
+  num = 10; // Reassigns the COPY
+}
+
+modifyPrimitive(count);
+// count is still 5
+```
+
+### 2\. Objects and Arrays (References are Copied)
+
+When an object or array is passed, the **reference** (the memory address pointing to the object) is copied. Both the original variable and the function parameter now hold a reference to the **same object in memory**.
+
+This leads to two crucial scenarios:
+
+#### A. Mutation (Modifying the Object) $\rightarrow$ **Original IS Changed**
+
+If you change a property or element *of the object* using the copied reference, you are modifying the one and only object in memory.
+
+| Action | Code Example | Result |
+| :--- | :--- | :--- |
+| **Mutation** | `obj.key = 'new value';` | Original object **IS changed.** |
+
+```javascript
+let person = { name: "Alice" };
+
+function mutateObject(obj) {
+  // Both 'person' and 'obj' point to the same object
+  obj.name = "Bob"; // Mutates the object in memory
+}
+
+mutateObject(person);
+// person is now { name: "Bob" }
+```
+
+#### B. Reassignment (Assigning a New Object) $\rightarrow$ **Original is NOT Changed**
+
+If you reassign the parameter to a *completely new object*, you are only changing which object the parameter's copied reference points to. The original variable still points to the old object.
+
+| Action | Code Example | Result |
+| :--- | :--- | :--- |
+| **Reassignment** | `obj = { key: 'new' };` | Original variable **is NOT changed.** |
+
+```javascript
+let data = { id: 1 };
+
+function reassignObject(obj) {
+  // 'obj' now points to a completely NEW object
+  obj = { id: 2 }; 
+}
+
+reassignObject(data);
+// data is still { id: 1 } 
+```
+
+### Summary Rule
+
+The MDN quote applies specifically to **reassignment**:
+
+> **Assigning a new value to a parameter never affects the variable outside the function.**
+
+| Data Type | Action | Original Variable Effect |
+| :--- | :--- | :--- |
+| **Primitive** | Reassignment | **No Change** |
+| **Object** | Reassignment | **No Change** |
+| **Object** | Mutation | **Change** |
+
