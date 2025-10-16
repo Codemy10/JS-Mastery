@@ -372,4 +372,238 @@ The MDN quote applies specifically to **reassignment**:
 | **Primitive** | Reassignment | **No Change** |
 | **Object** | Reassignment | **No Change** |
 | **Object** | Mutation | **Change** |
+---
 
+# 🧠 JavaScript Functions 
+
+Functions are reusable blocks of code designed to perform a single task.
+
+---
+
+## 🏗️ Function Declaration
+
+```js
+function square(number) {
+  return number * number;
+}
+```
+
+* Uses the `function` keyword.
+* Has a **name**, **parameters**, and **body**.
+* **Hoisted** — can be called before it’s defined.
+
+### Example:
+
+```js
+console.log(square(5)); // 25
+```
+
+---
+
+## 🧩 Function Expression
+
+```js
+const square = function (number) {
+  return number * number;
+};
+```
+
+* Function stored in a variable.
+* **Not hoisted** — must be defined before use.
+* Can be **anonymous** or **named**.
+
+```js
+const factorial = function fac(n) {
+  return n < 2 ? 1 : n * fac(n - 1);
+};
+```
+
+---
+
+## ⚙️ Calling Functions
+
+* Execute with parentheses `()`.
+* Pass arguments matching the parameters.
+* Functions can return a value using `return`.
+
+```js
+function greet(name) {
+  return "Hello " + name;
+}
+console.log(greet("Rahman"));
+```
+
+---
+
+## ♻️ Function Hoisting
+
+✅ Works:
+
+```js
+console.log(square(2));
+function square(n) { return n * n; }
+```
+
+❌ Doesn’t work:
+
+```js
+console.log(square(2)); // ReferenceError
+const square = function(n) { return n * n; };
+```
+
+---
+
+## 🔁 Recursion
+
+A function that calls itself.
+
+```js
+function factorial(n) {
+  if (n <= 1) return 1;
+  return n * factorial(n - 1);
+}
+```
+
+---
+
+## ⚡ Immediately Invoked Function Expression (IIFE)
+
+Executes immediately after being defined.
+
+```js
+(function () {
+  console.log("Runs instantly!");
+})();
+```
+
+✅ Creates its own scope (avoids variable pollution).
+
+---
+
+## 🧱 Scope & Closures
+
+* Functions create a **new scope**.
+* Inner functions can access variables from outer scopes.
+* A **closure** is when a function “remembers” variables from its outer scope even after that scope ends.
+
+```js
+function createCounter() {
+  let count = 0;
+  return function () {
+    count++;
+    return count;
+  };
+}
+
+const counter = createCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2
+```
+
+---
+
+## 🔒 Nested Functions (Scope Chaining)
+
+```js
+function A(x) {
+  function B(y) {
+    function C(z) {
+      console.log(x + y + z);
+    }
+    C(3);
+  }
+  B(2);
+}
+A(1); // 6
+```
+
+Inner functions can access all parent scopes.
+
+---
+
+## ⚔️ Name Conflicts (Precedence)
+
+Inner scope variables override outer ones.
+
+```js
+function outer() {
+  const x = 5;
+  function inner(x) {
+    return x * 2;
+  }
+  return inner(10); // 20
+}
+```
+
+---
+
+## 🧮 The `arguments` Object
+
+Array-like object holding all passed arguments.
+
+```js
+function myConcat(separator) {
+  let result = "";
+  for (let i = 1; i < arguments.length; i++) {
+    result += arguments[i] + separator;
+  }
+  return result;
+}
+
+console.log(myConcat(", ", "red", "blue")); // red, blue,
+```
+
+---
+
+## 🎯 Function Parameters
+
+### Default Parameters
+
+```js
+function multiply(a, b = 1) {
+  return a * b;
+}
+multiply(5); // 5
+```
+
+### Rest Parameters
+
+```js
+function multiply(multiplier, ...numbers) {
+  return numbers.map(n => n * multiplier);
+}
+console.log(multiply(2, 1, 2, 3)); // [2,4,6]
+```
+
+---
+
+## ⚡ Arrow Functions
+
+Shorter syntax and no own `this` binding.
+
+```js
+const add = (a, b) => a + b;
+```
+
+### Example:
+
+```js
+function Person() {
+  this.age = 0;
+  setInterval(() => {
+    this.age++; // refers to Person instance
+  }, 1000);
+}
+```
+
+---
+
+## 📘 Summary Table
+
+| Concept              | Keyword                | Hoisted | Has `this` | Typical Use                |
+| -------------------- | ---------------------- | ------- | ---------- | -------------------------- |
+| Function Declaration | `function name()`      | ✅       | ✅          | General purpose            |
+| Function Expression  | `const f = function()` | ❌       | ✅          | Dynamic or callbacks       |
+| Arrow Function       | `() => {}`             | ❌       | ❌          | Short functions, callbacks |
+| IIFE                 | `(function(){})()`     | ❌       | Depends    | Init logic, privacy        |
+| Closure              | N/A                    | ✅       | ✅          | Encapsulation, memory      |
