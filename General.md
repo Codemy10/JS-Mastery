@@ -607,3 +607,385 @@ function Person() {
 | Arrow Function       | `() => {}`             | ❌       | ❌          | Short functions, callbacks |
 | IIFE                 | `(function(){})()`     | ❌       | Depends    | Init logic, privacy        |
 | Closure              | N/A                    | ✅       | ✅          | Encapsulation, memory      |
+
+
+---
+# ⚙️ JavaScript Operators — Concise, Complete Reference
+
+> For each operator: **what it does**, **short example**, and **important notes/gotchas**.
+
+---
+
+## 1) Assignment Operators
+
+Assign values to variables or properties.
+
+```js
+x = 5;
+x += 2;   // x = x + 2
+x -= 1;   // x = x - 1
+x *= 3;   // x = x * 3
+x /= 2;   // x = x / 2
+x %= 4;   // x = x % 4
+x **= 2;  // x = x ** 2
+x <<= 1;  // left shift
+x >>= 1;  // sign-propagating right shift
+x >>>= 1; // unsigned right shift
+x &= y; x ^= y; x |= y; // bitwise compound
+x &&= v; x ||= v; x ??= v; // logical compound
+```
+
+**Notes**
+
+* `x &&= v` → if `x` truthy then `x = v`.
+* `x ||= v` → if `x` falsy then `x = v`.
+* `x ??= v` → if `x` is `null` or `undefined` then `x = v`.
+* Assignment expressions return the assigned value — you can chain: `a = b = 2` (right-associative). **Avoid complex chains** (surprising side-effects, scope issues with `const/let`).
+
+---
+
+## 2) Property Assignment
+
+Assigning to object properties:
+
+```js
+const obj = {};
+obj.x = 3;
+obj['y'] = 5;
+```
+
+**Notes**
+
+* If the base is a primitive (`0`, `null`, `undefined`) assigning to `.prop` does nothing (or throws in strict mode for `null/undefined`).
+* Cannot assign to non-writable properties; will throw in strict mode.
+
+---
+
+## 3) Destructuring Assignment
+
+Extract values from arrays/objects concisely.
+
+```js
+const [a, b] = [1, 2];
+const {name, age} = {name: 'A', age: 20};
+const [first, ...rest] = [1,2,3];
+```
+
+**Notes**
+
+* Useful default values: `function f(a=1) {}` or `{x = 0}` in destructuring.
+* Can be nested and combined.
+
+---
+
+## 4) Comparison Operators
+
+Compare values.
+
+```js
+==  // loose equality (coerces)
+=== // strict equality (no coercion)
+!=  // loose inequality
+!== // strict inequality
+> >= < <= // numeric/string comparisons
+```
+
+**Examples**
+
+```js
+3 == '3'   // true
+3 === '3'  // false
+'2' < 12   // true (coerced to number)
+```
+
+**Notes**
+
+* Prefer `===` / `!==` to avoid coercion surprises.
+* For object sameness, `Object.is()` has special semantics (NaN, -0).
+
+---
+
+## 5) Arithmetic Operators
+
+Basic math and increments.
+
+```js
++ - * / % **   // exponentiation **
+++x  // prefix increment (returns new value)
+x++  // postfix increment (returns old value)
+--x, x--
++x   // unary plus converts to number
+-x   // unary negation
+```
+
+**Notes**
+
+* `x++` returns the original value then increments. Use consciously.
+* Division by zero → `Infinity` (for Number).
+
+---
+
+## 6) Bitwise Operators
+
+Operate on 32-bit integer bit patterns.
+
+```js
+&  |  ^  ~   // AND, OR, XOR, NOT
+<< >> >>>    // shifts: left, sign-right, zero-fill-right
+```
+
+**Example**
+
+```js
+9 & 15 // 9
+15 ^ 9 // 6
+~9     // -10 (two's complement)
+```
+
+**Notes**
+
+* JavaScript converts operands to 32-bit signed integers for bitwise ops.
+* `>>>` not available for `BigInt`.
+
+---
+
+## 7) Bitwise Assignment
+
+Compound forms like `x &= y`, `x |= y`, etc. (behave like assignment using the operator then assign back).
+
+---
+
+## 8) Logical Operators (Value selection + short-circuit)
+
+Not just booleans — often used to select values.
+
+```js
+&&   // returns left if falsy, else right
+||   // returns left if truthy, else right
+!    // logical NOT -> boolean
+??   // nullish coalescing: returns left if not null/undefined, else right
+```
+
+**Examples**
+
+```js
+0 && 'a'   // 0
+'Cat' && 'Dog' // 'Dog'
+false || 'hi' // 'hi'
+null ?? 'default' // 'default'
+0 ?? 5 // 0  (unlike || which would return 5)
+```
+
+**Notes**
+
+* Short-circuit: right-hand is not evaluated if left-hand decides result.
+* Use `??` when `0` or `''` are valid values and you want to treat only `null/undefined` as missing.
+
+---
+
+## 9) Unary Operators (delete, typeof, void)
+
+Single operand utilities.
+
+```js
+delete obj.prop;         // removes property; returns true/false
+typeof x;                // returns type as string: 'number', 'string', 'object', 'function', 'undefined'
+void expression;         // evaluates expression, returns undefined
+```
+
+**Notes**
+
+* `delete` on non-configurable property -> returns false (or throws in strict scenarios).
+* `typeof null` returns `'object'` (historical quirk).
+* `void 0` is a classic way to get `undefined`.
+
+---
+
+## 10) Relational Operators (in, instanceof)
+
+Test properties / inheritance.
+
+```js
+'length' in []    // true
+0 in ['a']        // true (index exists)
+obj instanceof Array // true if obj created by Array or inherits from it
+```
+
+**Notes**
+
+* `in` checks property presence (including prototype chain).
+* `instanceof` checks prototype chain against constructor.prototype.
+
+---
+
+## 11) String Operators
+
+Concatenation with `+` and `+=`:
+
+```js
+'hello' + ' ' + 'you'  // 'hello you'
+let s = 'a'; s += 'b'  // 'ab'
+```
+
+**Notes**
+
+* `+` with numbers and strings coerces (watch `'2' + 3`).
+
+---
+
+## 12) Conditional / Ternary Operator
+
+Short if/else as expression:
+
+```js
+condition ? val1 : val2
+const status = age >= 18 ? 'adult' : 'minor';
+```
+
+---
+
+## 13) Comma Operator
+
+Evaluate expressions left-to-right, return last value. Rarely used.
+
+```js
+let x = (1, 2, 3); // x = 3
+for (let i=0, j=10; i<j; i++, j--) {}
+```
+
+**Notes**
+
+* Use only when you really need multiple expressions in contexts that accept one expression (like `for`).
+
+---
+
+## 14) Short-circuit Evaluation (behavior)
+
+Logical expressions evaluate left→right and stop as soon as result determined:
+
+* `falsy && anything` → returns falsy (right not evaluated)
+* `truthy || anything` → returns truthy (right not evaluated)
+* `nonNullish ?? anything` → returns left (right not evaluated)
+
+**Use**: conditional execution without `if`, default value selection, guarded property access.
+
+---
+
+## 15) BigInt Operators (special cases)
+
+BigInt supports most arithmetic and bitwise ops, but:
+
+* No mixing with Number (`1n + 2` → TypeError). Convert explicitly.
+* No unsigned right shift (`>>>`) for BigInt.
+* Use `BigInt()` or `Number()` to convert.
+
+```js
+1n + 2n  // 3n
+1n / 2n  // 0n
+```
+
+---
+
+## 16) Optional Chaining
+
+Safe access for nested props that may be `null/undefined`.
+
+```js
+const v = obj?.prop;
+const fnResult = maybeFn?.();
+const deep = obj?.a?.b?.c;
+```
+
+**Notes**
+
+* Stops early and returns `undefined` if any link is `null/undefined`. Prevents `TypeError`.
+
+---
+
+## 17) Grouping Operator
+
+Parentheses control precedence:
+
+```js
+(a + b) * c
+```
+
+**Notes**
+
+* Use to make evaluation order explicit.
+
+---
+
+## 18) Property Accessors
+
+Two forms:
+
+```js
+obj.prop
+obj['prop']
+```
+
+**Notes**
+
+* Bracket form allows dynamic keys or keys with special characters.
+
+---
+
+## 19) `this`, `super`, `new`
+
+* `this` refers to the calling context (varies with call type; arrow functions inherit from outer scope).
+* `super` used in classes to call parent constructors/methods.
+* `new` creates instances from constructors: `new C()`.
+
+---
+
+## 20) Pitfalls & Best Practices (must-know)
+
+* Prefer `===` / `!==` over `==` / `!=`.
+* Avoid complex assignment chains — they’re hard to read and can create globals if used with `var` incorrectly.
+* Beware `typeof null === 'object'` — special case.
+* Prefer `??` for safe defaulting when `0`/`''` are valid values.
+* Use optional chaining (`?.`) to safely access deep properties.
+* Use arrow functions when you want lexical `this`.
+* Don’t mix `BigInt` and `Number` without explicit conversion.
+* Be careful with `delete` on arrays — it leaves holes (use `splice` to remove entries properly).
+* `for...in` iterates keys (incl. prototype); `for...of` iterates values (for iterables).
+
+---
+
+## 21) Quick Reference Examples (copy-paste)
+
+```js
+// assignment & destructuring
+let a = 1;
+a += 2;           // 3
+const [x,y] = [1,2];
+
+// comparison
+3 === '3' // false
+
+// logical
+const v = null ?? 'def'; // 'def'
+const left = 0 || 'fallback'; // 'fallback'
+
+// ternary
+const ok = true ? 'yes' : 'no'; // 'yes'
+
+// optional chaining
+const val = obj?.deep?.value;
+
+// typeof
+typeof 42;     // 'number'
+typeof null;   // 'object' (quirk)
+
+// delete
+const o = {a:1}; delete o.a; // true
+
+// BigInt
+const big = 1000000000000n + 2n;
+
+// comma in for
+for (let i=0, j=3; i<j; i++, j--) { /* ... */ }
+```
+
+
