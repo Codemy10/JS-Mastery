@@ -988,4 +988,335 @@ const big = 1000000000000n + 2n;
 for (let i=0, j=3; i<j; i++, j--) { /* ... */ }
 ```
 
+---
+
+# 📘 **JavaScript Regular Expressions — Full Developer Documentation**
+
+> **Regular Expressions (RegExp)** are patterns used to match character combinations in strings.
+> In JavaScript, regex are also **objects**, used with methods from both `RegExp` and `String`.
+
+---
+
+## 🧱 **1. Creating Regular Expressions**
+
+You can create a regular expression in **two ways:**
+
+### **1.1 Using a Regex Literal**
+
+```js
+const re = /ab+c/;
+```
+
+* Compiled when the script is loaded.
+* Best for **constant expressions** (improves performance).
+
+### **1.2 Using the RegExp Constructor**
+
+```js
+const re = new RegExp("ab+c");
+```
+
+* Compiled at **runtime**.
+* Use when:
+
+  * The pattern **changes dynamically**, or
+  * The pattern comes from **user input** or another variable.
+
+---
+
+## ✍️ **2. Writing a Regular Expression Pattern**
+
+A pattern is made up of **simple** and **special** characters.
+
+### **2.1 Simple Patterns**
+
+Match literal characters:
+
+```js
+/abc/
+```
+
+* Matches “abc” in `"know your abc's"` ✅
+* Doesn’t match `"Grab crab"` ❌
+
+### **2.2 Special Characters**
+
+Used for flexible or complex matching.
+
+Example:
+
+```js
+/ab*c/
+```
+
+* `*` → zero or more occurrences
+* Matches `"ac"`, `"abc"`, `"abbc"`, `"abbbc"`, etc.
+
+---
+
+## 🧠 **3. Categories of Special Characters**
+
+| Category                    | Description                      | Examples                                 |
+| --------------------------- | -------------------------------- | ---------------------------------------- |
+| **Character Classes**       | Distinguish types of characters  | `[xyz]`, `[^xyz]`, `.`, `\d`, `\w`, `\s` |
+| **Assertions**              | Define boundaries or lookarounds | `^`, `$`, `\b`, `x(?=y)`, `(?<=y)x`      |
+| **Groups & Backreferences** | Capture and reuse submatches     | `(x)`, `(?:x)`, `\1`, `\k<Name>`         |
+| **Quantifiers**             | Define repetition                | `x*`, `x+`, `x?`, `x{n,m}`               |
+
+---
+
+## ⚙️ **4. Escaping Special Characters**
+
+If you need to match a **special character literally**, use a **backslash `\`** before it.
+
+Example:
+
+```js
+/a\*b/
+```
+
+Matches the text `"a*b"` (not "abbb").
+
+Alternative using a character class:
+
+```js
+/a[*]b/
+```
+
+### Escaping Slashes
+
+To match `/example/`, escape both slashes:
+
+```js
+/\/example\/[a-z]+/i
+```
+
+### Matching a Backslash
+
+To match `"C:\"`, use:
+
+```js
+/[A-Z]:\\/
+```
+
+> ⚠️ **Note:** In string-based regex via the constructor, escape backslashes **twice**:
+
+```js
+new RegExp("a\\*b"); // same as /a\*b/
+```
+
+---
+
+## 🧩 **5. Using Parentheses — Grouping**
+
+Parentheses **group parts of a pattern** and **capture** matched substrings for reuse.
+
+Example:
+
+```js
+/(Chapter) (\d+)/
+```
+
+Captures `"Chapter"` and the number separately.
+
+Use **non-capturing groups** to group without storing:
+
+```js
+(?:abc)
+```
+
+See *Groups and Backreferences* for more advanced usage.
+
+---
+
+## 🚀 **6. Using Regular Expressions in JavaScript**
+
+Regex interacts with both `RegExp` and `String` methods.
+
+### **6.1 RegExp Methods**
+
+| Method   | Description       | Returns         |
+| -------- | ----------------- | --------------- |
+| `exec()` | Executes a search | Array or `null` |
+| `test()` | Tests for a match | Boolean         |
+
+### **6.2 String Methods**
+
+| Method         | Description                    |
+| -------------- | ------------------------------ |
+| `match()`      | Returns matches (array)        |
+| `matchAll()`   | Returns iterator of matches    |
+| `search()`     | Returns index of first match   |
+| `replace()`    | Replaces first match           |
+| `replaceAll()` | Replaces all matches           |
+| `split()`      | Splits a string based on regex |
+
+---
+
+## 🧮 **7. Choosing the Right Method**
+
+| Goal                    | Recommended Method             |
+| ----------------------- | ------------------------------ |
+| Just check if it exists | `.test()` or `.search()`       |
+| Get match details       | `.exec()` or `.match()`        |
+| Get all matches         | `.matchAll()`                  |
+| Replace text            | `.replace()` / `.replaceAll()` |
+| Split text              | `.split()`                     |
+
+---
+
+## 🧰 **8. Example — Using `exec()`**
+
+```js
+const myRe = /d(b+)d/g;
+const result = myRe.exec("cdbbdbsbz");
+
+console.log(result);
+// ['dbbd', 'bb', index: 1, input: 'cdbbdbsbz']
+```
+
+### Result Properties
+
+| Property         | Description                  | Example       |
+| ---------------- | ---------------------------- | ------------- |
+| `[0]`            | Full match                   | `'dbbd'`      |
+| `[1+]`           | Captured groups              | `'bb'`        |
+| `index`          | Position of match            | `1`           |
+| `input`          | Original string              | `'cdbbdbsbz'` |
+| `myRe.lastIndex` | Next search index (for `/g`) | `5`           |
+| `myRe.source`    | Pattern text                 | `'d(b+)d'`    |
+
+---
+
+## 🧩 **9. Important Note: Regex Object Reuse**
+
+Each regex literal creates a **new RegExp object**.
+
+```js
+const re1 = /d(b+)d/g;
+const re2 = /d(b+)d/g;
+
+re1 === re2; // false
+```
+
+If you need to reuse properties like `lastIndex`, assign it to a variable.
+
+---
+
+## 🏳️ **10. Advanced Searching — Regex Flags**
+
+Flags control **how** regex behaves.
+
+| Flag | Description                       | RegExp Property |
+| ---- | --------------------------------- | --------------- |
+| `d`  | Capture indices of matches        | `hasIndices`    |
+| `g`  | Global search                     | `global`        |
+| `i`  | Case-insensitive                  | `ignoreCase`    |
+| `m`  | Multiline mode                    | `multiline`     |
+| `s`  | Dot matches newlines              | `dotAll`        |
+| `u`  | Unicode mode                      | `unicode`       |
+| `v`  | Enhanced Unicode (ES2024+)        | `unicodeSets`   |
+| `y`  | Sticky match (from current index) | `sticky`        |
+
+### Example
+
+```js
+const re = /\w+\s/g;
+const str = "fee fi fo fum";
+console.log(str.match(re)); // ["fee ", "fi ", "fo "]
+```
+
+Equivalent constructor form:
+
+```js
+new RegExp("\\w+\\s", "g");
+```
+
+---
+
+## 🧮 **11. Global Search with `exec()`**
+
+When using `/g`, `exec()` returns matches **iteratively**:
+
+```js
+const re = /\w+\s/g;
+const str = "fee fi fo fum";
+
+console.log(re.exec(str)); // fee 
+console.log(re.exec(str)); // fi 
+console.log(re.exec(str)); // fo 
+console.log(re.exec(str)); // null
+```
+
+While `match()` returns all matches at once:
+
+```js
+str.match(re); // ["fee ", "fi ", "fo "]
+```
+
+---
+
+## 🌍 **12. Unicode Regular Expressions**
+
+Use the `u` flag for Unicode-safe matching.
+
+```js
+/\p{L}*/u; // Matches any sequence of Unicode letters
+```
+
+Unicode mode enables property escapes (`\p{...}`).
+
+---
+
+## 📱 **13. Example — Input Validation (Phone Number)**
+
+Validates U.S.-style phone numbers like `###-###-####`.
+
+```js
+const re = /^(?:\d{3}|\(\d{3}\))([-/.])\d{3}\1\d{4}$/;
+
+const input = document.querySelector("#phone");
+const output = document.querySelector("#output");
+
+function checkNumber() {
+  const ok = re.exec(input.value);
+  output.textContent = ok
+    ? `Thanks, your phone number is ${ok[0]}`
+    : `${input.value} isn't valid!`;
+}
+```
+
+---
+
+## 🧭 **14. Helpful Online Tools**
+
+| Tool                                                               | Description                  |
+| ------------------------------------------------------------------ | ---------------------------- |
+| [RegExr](https://regexr.com)                                       | Learn, test, and debug regex |
+| [Regex101](https://regex101.com)                                   | Explains each token          |
+| [Regex Tester](https://extendsclass.com/regex-tester.html)         | Fast web regex testing       |
+| [Regex Visualizer](https://extendsclass.com/regex-visualizer.html) | Graphical regex explorer     |
+
+---
+
+## 📘 **15. Summary Reference Table**
+
+| Category              | Constructs                               | Description                      |
+| --------------------- | ---------------------------------------- | -------------------------------- |
+| **Character Classes** | `[xyz]`, `[^xyz]`, `.`, `\d`, `\w`, `\s` | Match specific character types   |
+| **Assertions**        | `^`, `$`, `\b`, `x(?=y)`, `(?<=y)x`      | Anchors and lookarounds          |
+| **Groups & Backrefs** | `(x)`, `(?:x)`, `\1`, `\k<Name>`         | Capture, name, and reuse matches |
+| **Quantifiers**       | `x*`, `x+`, `x?`, `x{n,m}`               | Control repetition               |
+| **Escaping**          | `\`, `[ ]`                               | Match literal special characters |
+| **Flags**             | `g`, `i`, `m`, `s`, `u`, `y`, `v`        | Modify match behavior            |
+
+---
+
+## ✅ **16. Key Takeaways**
+
+* Regex are **powerful tools** for pattern matching and text processing.
+* Use **literals** for static patterns, **constructors** for dynamic ones.
+* Learn the **4 core categories:** Character Classes, Assertions, Groups, and Quantifiers.
+* Use **tools** (like RegExr) to practice visually.
+* Remember to **escape** special characters carefully.
 
