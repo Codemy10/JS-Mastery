@@ -1320,3 +1320,279 @@ function checkNumber() {
 * Use **tools** (like RegExr) to practice visually.
 * Remember to **escape** special characters carefully.
 
+---
+---
+
+## 🧠 What Is a `WeakMap`?
+
+A **`WeakMap`** is like a `Map`, but with a special rule:
+
+> Its **keys must be objects (or non-registered symbols)**, and it holds them *weakly* — meaning if nothing else references that object, it’s automatically removed from memory.
+
+So the “weak” part means:
+
+* The key doesn’t *prevent garbage collection*.
+* You can’t loop over it or check its size.
+* You can only `set`, `get`, `has`, and `delete`.
+
+---
+
+## 🧩 Basic Example
+
+```js
+let user = { name: "Alice" };
+const userData = new WeakMap();
+
+userData.set(user, { balance: 500 });
+
+console.log(userData.get(user)); // { balance: 500 }
+
+user = null; // remove reference to the object
+// After garbage collection, the key and value are gone too!
+```
+
+✅ If you used a `Map`, that `{ name: "Alice" }` key would stay in memory **forever** — even if the object was deleted elsewhere.
+✅ `WeakMap` avoids that → no memory leaks!
+
+---
+
+## ⚙️ WeakMap API (same as Map, but limited)
+
+| Method             | Description         |
+| ------------------ | ------------------- |
+| `.set(key, value)` | Add an entry        |
+| `.get(key)`        | Retrieve value      |
+| `.has(key)`        | Check if key exists |
+| `.delete(key)`     | Remove an entry     |
+
+❌ No `.size`, `.keys()`, `.values()`, or iteration methods — because if the garbage collector suddenly removes an object, you can’t guarantee stable results.
+
+---
+
+## 🧩 Example: Private Data for Objects
+
+This is one of the main *real-world* uses of `WeakMap`:
+→ Storing **private data** inside modules or classes that can’t be accessed from the outside.
+
+```js
+const _privates = new WeakMap();
+
+export default class Trader {
+  constructor(name, balance) {
+    _privates.set(this, { name, balance });
+  }
+
+  deposit(amount) {
+    const data = _privates.get(this);
+    data.balance += amount;
+    console.log(`${data.name} deposited $${amount}. New balance: $${data.balance}`);
+  }
+}
+
+const alice = new Trader("Alice", 1000);
+alice.deposit(200); // Alice deposited $200. New balance: $1200
+```
+
+Here:
+
+* `_privates` is a `WeakMap` that stores private info.
+* Nobody outside can access `_privates` because it’s not exported.
+* When `alice` is deleted, her data in `_privates` also disappears.
+* No manual cleanup required → automatic memory management!
+
+---
+
+## 💡 Why WeakMap Exists (in simple terms)
+
+| Problem                                                      | Solution                      |
+| ------------------------------------------------------------ | ----------------------------- |
+| You attach extra data to objects but risk memory leaks       | WeakMap holds objects weakly  |
+| You want “private fields” (before `#private` syntax existed) | WeakMap hides data perfectly  |
+| You don’t want to expose internal state in your API          | WeakMap keeps it inaccessible |
+
+---
+
+## ⚠️ WeakMap Limitations
+
+* Keys **must** be objects (or non-registered symbols)
+* No iteration, no `.size`
+* No way to clear all entries
+* It’s mostly used internally or in framework-level code (like React, libraries, or DOM caches)
+
+---
+
+## 🧩 Quick Visualization
+
+```
+Memory Heap
+ ├─ user = { name: "Alice" } ─────────────┐
+ │                                        │
+ │  WeakMap                              ▼
+ │  ┌──────────────────────────────┐
+ │  │ { user } → { balance: 500 } │
+ │  └──────────────────────────────┘
+ │
+ └─ user = null   ← reference gone → GC cleans up entry
+```
+
+---
+
+
+## 🧠 What Is a `Set`?
+
+A **`Set`** is a built-in object in JavaScript that lets you store **unique values** — no duplicates allowed.
+
+Think of it as a **mathematical set** (like in algebra):
+
+> `{1, 2, 3}` means you can’t have two 2’s.
+
+---
+
+## 🧩 Key Features
+
+| Feature                       | Description                                                  |
+| ----------------------------- | ------------------------------------------------------------ |
+| **Stores unique values**      | No duplicates — even if you try to add the same item twice.  |
+| **Any value type**            | You can store strings, numbers, objects, or even other sets. |
+| **Insertion order preserved** | Values appear in the order they were added.                  |
+| **Iterable**                  | You can loop through it using `for...of` or `forEach`.       |
+
+---
+
+## ⚙️ Creating and Using a Set
+
+### 🧩 Example:
+
+```js
+const coins = new Set();
+
+coins.add('BTC');
+coins.add('ETH');
+coins.add('SOL');
+coins.add('BTC'); // duplicate - ignored
+
+console.log(coins);        // Set(3) { 'BTC', 'ETH', 'SOL' }
+console.log(coins.size);   // 3
+console.log(coins.has('ETH')); // true
+
+coins.delete('SOL');
+console.log(coins);        // Set(2) { 'BTC', 'ETH' }
+
+coins.clear();             // removes all items
+console.log(coins.size);   // 0
+```
+
+---
+
+## 🧩 Iterating Over a Set
+
+You can loop through a Set in several ways:
+
+```js
+const markets = new Set(['Binance', 'Coinbase', 'Kraken']);
+
+for (const exchange of markets) {
+  console.log(exchange);
+}
+
+markets.forEach(exchange => console.log(exchange));
+```
+
+✅ Note: the iteration order is the **insertion order** — just like a `Map`.
+
+---
+
+## 💡 Common Use Cases
+
+### 1️⃣ **Removing Duplicates from Arrays**
+
+```js
+const prices = [100, 200, 100, 300, 200];
+const uniquePrices = [...new Set(prices)];
+
+console.log(uniquePrices); // [100, 200, 300]
+```
+
+### 2️⃣ **Checking Membership**
+
+You can quickly check if an item exists — it’s faster than using `indexOf()` for large lists.
+
+```js
+const watchedCoins = new Set(['BTC', 'ETH']);
+console.log(watchedCoins.has('ETH')); // true
+```
+
+### 3️⃣ **Set Operations**
+
+We can use Sets for union, intersection, and difference — like in math.
+
+#### Union
+
+```js
+const a = new Set([1, 2, 3]);
+const b = new Set([3, 4, 5]);
+const union = new Set([...a, ...b]);
+console.log(union); // Set(5) {1, 2, 3, 4, 5}
+```
+
+#### Intersection
+
+```js
+const intersection = new Set([...a].filter(x => b.has(x)));
+console.log(intersection); // Set(1) {3}
+```
+
+#### Difference
+
+```js
+const difference = new Set([...a].filter(x => !b.has(x)));
+console.log(difference); // Set(2) {1, 2}
+```
+
+---
+
+## 📈 Analogy (Finance / Real-World)
+
+Imagine you’re tracking **unique stock tickers** that a trader has viewed.
+
+Without a Set:
+
+```js
+const tickers = ['AAPL', 'TSLA', 'AAPL', 'GOOG'];
+```
+
+You’d have duplicates — messy.
+
+With a Set:
+
+```js
+const uniqueTickers = new Set(['AAPL', 'TSLA', 'AAPL', 'GOOG']);
+console.log(uniqueTickers); // Set(3) { 'AAPL', 'TSLA', 'GOOG' }
+```
+
+✅ Cleaner, faster, unique.
+
+---
+
+## 🧠 Quick Summary
+
+| Method           | Description         |
+| ---------------- | ------------------- |
+| `.add(value)`    | Add a value         |
+| `.delete(value)` | Remove a value      |
+| `.has(value)`    | Check if exists     |
+| `.clear()`       | Remove all values   |
+| `.size`          | Number of items     |
+| `.forEach()`     | Loop through values |
+
+---
+
+## ⚡ Pro Tip
+
+Because Sets only store **unique** values, they’re perfect when you care about **existence**, not frequency.
+
+If you need to count or map relationships (key → value), use a **Map**.
+If you only care about unique existence (is this coin tracked? is this stock watched?), use a **Set**.
+
+---
+---
