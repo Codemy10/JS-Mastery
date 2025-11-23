@@ -134,7 +134,7 @@ function sayHi() {
 }
 
 // add sayHi function to both objects
-Manager.sayHi = sayHi;
+Manager.sayHi = sayHi
 Intern.sayHi = sayHi;
 
 Manager.sayHi(); // Hello, my name is Karina
@@ -142,14 +142,14 @@ Intern.sayHi(); // Hello, my name is Tyrone
 
 
 // Getters and Setters
-const person = {
-  firstName: "Ada",
-  lastName: "Lovelace",
+// const person = {
+//   firstName: "Ada",
+//   lastName: "Lovelace",
   
-  get fullName() {
-    return `${this.firstName} ${this.lastName}`;
-  }
-};
+//   get fullName() {
+//     return `${this.firstName} ${this.lastName}`;
+//   }
+// };
 
 const person = {
   firstName: "Ada",
@@ -159,3 +159,26 @@ const person = {
     [this.firstName, this.lastName] = value.split(" ");
   }
 };
+
+
+
+const get_Set = {
+  value1: 2,
+  get value2(){
+    return this.value1 + 4;
+  },
+  set value3(x){
+    this.value1 = x/2
+  },
+};
+
+console.log(get_Set.value1);
+console.log(get_Set.value2);
+
+get_Set.value3 = 10;
+
+console.log(get_Set.value3);
+
+console.log(get_Set.value1)
+
+
