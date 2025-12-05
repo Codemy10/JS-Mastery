@@ -184,3 +184,91 @@ class childClass extends parentClass{
 const tester = new childClass("Ola","","","Bola")
 
 console.log(tester.simpleMethod())
+
+
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+  
+  speak() {
+    return `My name is ${this.name}`;
+  }
+}
+
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);
+    this.breed = breed;
+  }
+  
+  speak() {
+    return `Woof! I'm ${this.name} the ${this.breed}`;
+  }
+}
+
+const rex = new Dog("Rex", "German Shepherd");
+console.log(rex.speak()); // Woof! I'm Rex the German Shepherd
+
+
+
+// Real World example
+
+class User {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+
+  getRole() {
+    return "User";
+  }
+
+  describe() {
+    return `${this.name} (${this.getRole()})`;
+  }
+
+  static isEmailValid(email) {
+    return email.includes("@");
+  }
+}
+
+class AdminUser extends User {
+  constructor(name, email, permissions = []) {
+    super(name, email);
+    this.permissions = permissions;
+  }
+
+  getRole() {
+    return "Admin";
+  }
+
+  describe() {
+    return super.describe() + ` | Permissions: ${this.permissions.join(", ")}`;
+  }
+}
+
+
+class SuperAdmin extends AdminUser {
+  constructor(name, email) {
+    super(name, email, ["ALL"]);
+  }
+
+  getRole() {
+    return "SuperAdmin";
+  }
+
+  deactivateUser(user) {
+    console.log(`User ${user.name} has been deactivated.`);
+  }
+}
+
+const user = new User("Tobi", "tobi@mail.com");
+const admin = new AdminUser("Seyi", "seyi@mail.com", ["read", "write"]);
+const superadmin = new SuperAdmin("Ola", "ola@mail.com");
+
+console.log(user.describe());       
+console.log(admin.describe());      
+console.log(superadmin.describe()); 
+
+superadmin.deactivateUser(user);
