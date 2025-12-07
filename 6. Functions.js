@@ -52,7 +52,7 @@ console.log(arr[0]); // 30
 
 
 // Function Expression
-//  Anonymous funtion
+//  Anonymous function
 
 const square = function (number){
     return number * number;
@@ -160,9 +160,9 @@ console.log(myConcat("|", 2 ,3,4,5,6,7,8,9,10))
 
 // Function Parameters
 
-// Function parameters can be defalt or rest parameterr
+// Function parameters can be default or rest parameter
 
-// Defaault parameter
+// Default parameter
 
 // f no value is provided for b, its value would be undefined when evaluating a*b, and a call to multiply would normally have returned NaN. However, this is prevented by the second line in this example
 function multiply(a, b) {
@@ -179,4 +179,8 @@ function multiply(a, b = 1) {
 }
 
 console.log(multiply(5)); // 5
+
+
+
+// Callback functions
 

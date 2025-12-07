@@ -33,7 +33,7 @@ for (const [key,value] in obj){
     console.log(`${key} and ${value}`)
 }
 
-//  WEAKMAPS 
+//  WEAK MAPS 
 
 const user = {name : "TOlu"};
 
